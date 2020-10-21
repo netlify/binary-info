@@ -1,4 +1,4 @@
-use goblin::elf::Elf;
+use goblin::{elf::sym, elf::Elf};
 
 mod utils;
 
@@ -46,6 +46,16 @@ pub fn detect(data: &[u8]) -> Result<Option<Runtime>, JsValue> {
     {
         if s == RUST_PERSONALITY {
             return Ok(Some(Runtime::Rust));
+        }
+    }
+
+    for s in elf.syms.iter() {
+        if s.is_function() && s.st_bind() == sym::STB_GLOBAL {
+            if let Some(Ok(sym_name)) = elf.strtab.get(s.st_name) {
+                if sym_name == RUST_PERSONALITY {
+                    return Ok(Some(Runtime::Rust));
+                }
+            }
         }
     }
 
