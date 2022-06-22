@@ -75,7 +75,7 @@ pub fn get_runtime_from_elf(elf: Elf) -> Result<Option<Runtime>, goblin::error::
 // Implementation initially based on timfish/binary-info
 // https://github.com/timfish/binary-info/blob/v0.0.3/LICENSE
 pub fn get_info(buffer: &[u8]) -> Result<BinaryInfo, InfoError> {
-    match Obj::parse(&buffer)? {
+    match Obj::parse(buffer)? {
         Obj::Elf(elf) => {
             let arch = match elf.header.e_machine {
                 EM_AARCH64 => Arch::Arm64,
