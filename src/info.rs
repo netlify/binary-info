@@ -131,8 +131,8 @@ mod tests {
 
     #[test]
     fn test_detect_go_runtime_darwin_amd64() {
-        let buffer = std::fs::read("tests/data/darwin/hello-world-go-amd64")
-            .expect("failed to load binary file");
+        let buffer =
+            std::fs::read("tests/data/darwin/go-amd64").expect("failed to load binary file");
 
         let info = get_info(&buffer).expect("failed to detect runtime");
         assert_eq!(Arch::Amd64, info.arch);
@@ -142,8 +142,8 @@ mod tests {
 
     #[test]
     fn test_detect_go_runtime_darwin_arm64() {
-        let buffer = std::fs::read("tests/data/darwin/hello-world-go-arm64")
-            .expect("failed to load binary file");
+        let buffer =
+            std::fs::read("tests/data/darwin/go-arm64").expect("failed to load binary file");
 
         let info = get_info(&buffer).expect("failed to detect runtime");
         assert_eq!(Arch::Arm64, info.arch);
@@ -153,8 +153,7 @@ mod tests {
 
     #[test]
     fn test_detect_go_runtime_linux_x86() {
-        let buffer = std::fs::read("tests/data/linux/hello-world-go-x86")
-            .expect("failed to load binary file");
+        let buffer = std::fs::read("tests/data/linux/go-x86").expect("failed to load binary file");
 
         let info = get_info(&buffer).expect("failed to detect runtime");
         assert_eq!(Arch::X86, info.arch);
@@ -164,8 +163,8 @@ mod tests {
 
     #[test]
     fn test_detect_go_runtime_linux_amd64() {
-        let buffer = std::fs::read("tests/data/linux/hello-world-go-amd64")
-            .expect("failed to load binary file");
+        let buffer =
+            std::fs::read("tests/data/linux/go-amd64").expect("failed to load binary file");
 
         let info = get_info(&buffer).expect("failed to detect runtime");
         assert_eq!(Arch::Amd64, info.arch);
@@ -175,8 +174,7 @@ mod tests {
 
     #[test]
     fn test_detect_go_runtime_linux_arm() {
-        let buffer = std::fs::read("tests/data/linux/hello-world-go-arm")
-            .expect("failed to load binary file");
+        let buffer = std::fs::read("tests/data/linux/go-arm").expect("failed to load binary file");
 
         let info = get_info(&buffer).expect("failed to detect runtime");
         assert_eq!(Arch::Arm, info.arch);
@@ -186,8 +184,8 @@ mod tests {
 
     #[test]
     fn test_detect_go_runtime_linux_arm64() {
-        let buffer = std::fs::read("tests/data/linux/hello-world-go-arm64")
-            .expect("failed to load binary file");
+        let buffer =
+            std::fs::read("tests/data/linux/go-arm64").expect("failed to load binary file");
 
         let info = get_info(&buffer).expect("failed to detect runtime");
         assert_eq!(Arch::Arm64, info.arch);
@@ -197,8 +195,8 @@ mod tests {
 
     #[test]
     fn test_detect_rust_runtime_darwin_amd64() {
-        let buffer = std::fs::read("tests/data/darwin/hello-world-rs-amd64")
-            .expect("failed to load binary file");
+        let buffer =
+            std::fs::read("tests/data/darwin/rust-amd64").expect("failed to load binary file");
 
         let info = get_info(&buffer).expect("failed to detect runtime");
         assert_eq!(Arch::Amd64, info.arch);
@@ -208,8 +206,8 @@ mod tests {
 
     #[test]
     fn test_detect_rust_runtime_linux_amd64() {
-        let buffer = std::fs::read("tests/data/linux/hello-world-rs-amd64")
-            .expect("failed to load binary file");
+        let buffer =
+            std::fs::read("tests/data/linux/rust-amd64").expect("failed to load binary file");
 
         let info = get_info(&buffer).expect("failed to detect runtime");
         assert_eq!(Arch::Amd64, info.arch);
@@ -218,10 +216,31 @@ mod tests {
     }
 
     #[test]
+    fn test_detect_go_runtime_windows_amd64() {
+        let buffer =
+            std::fs::read("tests/data/windows/go-amd64.exe").expect("failed to load binary file");
+
+        let info = get_info(&buffer).expect("failed to detect runtime");
+        assert_eq!(Arch::Amd64, info.arch);
+        assert_eq!(Platform::Win32, info.platform);
+        assert!(info.runtime.is_none())
+    }
+
+    #[test]
+    fn test_detect_go_runtime_windows_x86() {
+        let buffer =
+            std::fs::read("tests/data/windows/go-x86.exe").expect("failed to load binary file");
+
+        let info = get_info(&buffer).expect("failed to detect runtime");
+        assert_eq!(Arch::X86, info.arch);
+        assert_eq!(Platform::Win32, info.platform);
+        assert!(info.runtime.is_none())
+    }
+
+    #[test]
     #[should_panic]
     fn test_detect_ignores_invalid_file() {
-        let buffer =
-            std::fs::read("tests/data/hello-world-text").expect("failed to load binary file");
+        let buffer = std::fs::read("tests/data/text").expect("failed to load binary file");
 
         get_info(&buffer).expect("failed to detect runtime");
     }
