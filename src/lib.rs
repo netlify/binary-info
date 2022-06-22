@@ -1,4 +1,5 @@
-mod elf;
+mod error;
+mod info;
 
 use wasm_bindgen::prelude::*;
 
@@ -8,27 +9,10 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-#[wasm_bindgen]
-pub enum Runtime {
-    Go,
-    Rust,
-}
-
-impl From<elf::Runtime> for Runtime {
-    fn from(rt: elf::Runtime) -> Self {
-        match rt {
-            elf::Runtime::Go => Runtime::Go,
-            elf::Runtime::Rust => Runtime::Rust,
-        }
-    }
-}
-
 #[wasm_bindgen(catch)]
-pub fn detect(data: &[u8]) -> Result<Option<Runtime>, JsValue> {
+pub fn detect(data: &[u8]) -> Result<info::BinaryInfo, JsValue> {
     set_panic_hook();
-    elf::detect(data)
-        .map_err(|e| JsValue::from(format!("error reading elf metadata: {}", e)))
-        .map(|o| o.map(Runtime::from))
+    info::get_info(data).map_err(|e| JsValue::from(format!("error reading binary: {}", e)))
 }
 
 fn set_panic_hook() {
