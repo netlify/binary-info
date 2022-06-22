@@ -4,7 +4,6 @@ version = "0.1.1"
 authors = ["David Calavera <david.calavera@gmail.com>"]
 edition = "2018"
 repository = "https://github.com/netlify/elf-cam"
-private = true
 license = "Apache 2"
 description = "elf-cam is a WebAssembly(WASM) module to extract very specific information from binary files built for Linux, also known as ELF files."
 
