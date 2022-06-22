@@ -7,7 +7,7 @@ pub struct InfoError {
 }
 
 impl InfoError {
-    pub fn new(msg: &str) -> InfoError {
+    pub fn new(msg: impl ToString) -> InfoError {
         InfoError {
             details: msg.to_string(),
         }
@@ -28,6 +28,6 @@ impl Error for InfoError {
 
 impl From<goblin::error::Error> for InfoError {
     fn from(err: goblin::error::Error) -> Self {
-        InfoError::new(&err.to_string())
+        InfoError::new(err)
     }
 }

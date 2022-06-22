@@ -3,7 +3,10 @@ use goblin::{
     elf::sym,
     elf::Elf,
     elf64::header::{EM_386, EM_AARCH64, EM_ARM, EM_X86_64},
-    mach::{cputype::get_arch_name_from_types, Mach},
+    mach::{
+        cputype::{CPU_TYPE_ARM64, CPU_TYPE_X86_64},
+        Mach,
+    },
     pe::header::{COFF_MACHINE_ARM64, COFF_MACHINE_X86, COFF_MACHINE_X86_64},
     Object as Obj,
 };
@@ -69,6 +72,8 @@ pub fn get_runtime_from_elf(elf: Elf) -> Result<Option<Runtime>, goblin::error::
     Ok(None)
 }
 
+// Implementation initially based on timfish/binary-info
+// https://github.com/timfish/binary-info/blob/v0.0.3/LICENSE
 pub fn get_info(buffer: &[u8]) -> Result<BinaryInfo, InfoError> {
     match Obj::parse(&buffer)? {
         Obj::Elf(elf) => {
@@ -77,7 +82,7 @@ pub fn get_info(buffer: &[u8]) -> Result<BinaryInfo, InfoError> {
                 EM_X86_64 => Arch::Amd64,
                 EM_ARM => Arch::Arm,
                 EM_386 => Arch::X86,
-                _ => return Err(InfoError::new(&"Unknown architecture")),
+                _ => return Err(InfoError::new("Unknown architecture")),
             };
 
             let runtime = get_runtime_from_elf(elf)?;
@@ -93,7 +98,7 @@ pub fn get_info(buffer: &[u8]) -> Result<BinaryInfo, InfoError> {
                 COFF_MACHINE_ARM64 => Arch::Arm64,
                 COFF_MACHINE_X86 => Arch::X86,
                 COFF_MACHINE_X86_64 => Arch::Amd64,
-                _ => return Err(InfoError::new(&"Unknown architecture")),
+                _ => return Err(InfoError::new("Unknown architecture")),
             };
 
             Ok(BinaryInfo {
@@ -103,15 +108,12 @@ pub fn get_info(buffer: &[u8]) -> Result<BinaryInfo, InfoError> {
             })
         }
         Obj::Mach(mach) => match mach {
-            Mach::Fat(_) => todo!(),
+            Mach::Fat(_) => return Err(InfoError::new("Unsupported binary")),
             Mach::Binary(mach_o) => {
-                let arch = match get_arch_name_from_types(
-                    mach_o.header.cputype(),
-                    mach_o.header.cpusubtype(),
-                ) {
-                    Some("x86_64") => Arch::Amd64,
-                    Some("arm64") => Arch::Arm64,
-                    _ => return Err(InfoError::new(&"Unknown architecture")),
+                let arch = match mach_o.header.cputype() {
+                    CPU_TYPE_X86_64 => Arch::Amd64,
+                    CPU_TYPE_ARM64 => Arch::Arm64,
+                    _ => return Err(InfoError::new("Unknown architecture")),
                 };
 
                 Ok(BinaryInfo {
@@ -121,7 +123,7 @@ pub fn get_info(buffer: &[u8]) -> Result<BinaryInfo, InfoError> {
                 })
             }
         },
-        _ => Err(InfoError::new(&"Not a binary")),
+        _ => Err(InfoError::new("Not a binary")),
     }
 }
 
