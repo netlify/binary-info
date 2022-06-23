@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/netlify/elf-cam/compare/v1.0.0...v1.0.1) (2022-06-23)
+
+
+### Miscellaneous Chores
+
+* fix release workflow ([#13](https://github.com/netlify/elf-cam/issues/13)) ([0aade15](https://github.com/netlify/elf-cam/commit/0aade15d09809e3433fc5e7520a682ac03243faf))
+
 ## [1.0.0](https://github.com/netlify/elf-cam/compare/v0.1.1...v1.0.0) (2022-06-23)
 
 
