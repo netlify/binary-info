@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0](https://github.com/netlify/binary-info/compare/v1.0.0...v1.0.0) (2022-06-23)
+## 1.0.0 (2022-06-23)
 
 
 ### ⚠ BREAKING CHANGES
