@@ -16,8 +16,8 @@ jobs:
         id: release
         with:
           token: ${{ steps.get-token.outputs.token }}
-          release-type: node
-          package-name: "@netlify/binary-info"
+          release-type: rust
+          package-name: "binary-info"
       - uses: actions/checkout@v3
         if: ${{ steps.release.outputs.release_created }}
       - run:
