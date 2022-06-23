@@ -17,7 +17,7 @@ jobs:
         with:
           token: ${{ steps.get-token.outputs.token }}
           release-type: node
-          package-name: "@netlify/@netlify/zip-it-and-ship-it"
+          package-name: "@netlify/binary-info"
       - uses: actions/checkout@v3
         if: ${{ steps.release.outputs.release_created }}
       - run:
@@ -28,9 +28,9 @@ jobs:
           node-version: "*"
           registry-url: "https://registry.npmjs.org"
         if: ${{ steps.release.outputs.release_created }}
-      - run: wasm-pack build --target nodejs --release
+      - run: wasm-pack build --target nodejs --release --scope=netlify
         if: ${{ steps.release.outputs.release_created }}
-      - run: wasm-pack publish
+      - run: wasm-pack publish --access public
         if: ${{ steps.release.outputs.release_created }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
